@@ -10,12 +10,12 @@
     'summary': '',
     "depends": [
         "base",
-        "sale_management", 
+        "sale", 
     ],
     'external_dependencies': {
     },
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
         'views/servicio_emanuel_views.xml',
         'views/templates.xml',
     ],
