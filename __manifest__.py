@@ -11,6 +11,7 @@
     "depends": [
         "base",
         "sale", 
+        "sale_management",
     ],
     'external_dependencies': {
     },
