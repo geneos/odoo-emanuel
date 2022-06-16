@@ -1,3 +1,3 @@
 # -*- coding: utf-8 -*-
 
-from . import servicio_emanuel
+from . import servicio_emanuel, servicio_adquirido, periodo
