@@ -1,13 +1,6 @@
-from dataclasses import fields
-from pyexpat import model
+from odoo import models, fields, api
 
-
-class periodo(model.Model):
-    _name = 'odoo_emanuel.periodo'
-    _description = 'Periodo'
-    _rec_name = 'name'
-
-    meses=[
+meses=[
         ('01','01'),
         ('02','02'),
         ('03','03'),
@@ -22,7 +15,7 @@ class periodo(model.Model):
         ('12','12'),
     ]
 
-    año=[
+año=[
         ('2010','2010'),
         ('2011','2011'),
         ('2012','2012'),
@@ -55,6 +48,12 @@ class periodo(model.Model):
         ('2039','2039'),
         ('2040','2040'),
     ]
+
+class periodo(models.Model):
+    _name = 'odoo_emanuel.periodo'
+    _description = 'Periodo'
+    #_rec_name = 'name'
+
 
     mes = fields.Selection(meses)
     año = fields.Selection(año)

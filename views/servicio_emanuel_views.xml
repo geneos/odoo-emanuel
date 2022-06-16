@@ -10,8 +10,8 @@
           <field name="name"/>
           <field name="es_servicio_interes"/>
           <field name="activo"/>
-          <field name="es_servicio_costo_unico">      
-          <field name="costo_unico_servicio"  attrs="{'invisible':[('es_servicio_costo_unico', '=', 'False')]},{'required': [('es_servicio_costo_unico','=', True)]}"/>           
+          <field name="es_servicio_costo_unico"/>      
+          <field name="costo_unico_servicio" attrs="{'invisible':[('es_servicio_costo_unico', '=', False)], 'required': [('es_servicio_costo_unico','=', True)]}" />         
         </tree>
       </field>
     </record>
@@ -24,6 +24,12 @@
       <field name="res_model">odoo_emanuel.servicio_emanuel</field>
       <field name="view_mode">tree,form</field>
     </record>
+
+    <record model="ir.actions.act_window" id="odoo_emanuel.action_window_costo_unico">
+      <field name="name">Servicios Emanuel Costo Unico</field>
+      <field name="res_model">odoo_emanuel.linea_costo_unico</field>
+      <field name="view_mode">tree,form</field>
+    </record>
     
 
     <!-- Top menu item -->
@@ -34,6 +40,13 @@
       action="odoo_emanuel.action_window"
       groups="sales_team.group_sale_salesman" 
       sequence="18"/>
+
+     <menuitem id="odoo_emanuel.menu_servicios_costo_unico" 
+      name="Servicios de Costo Unico" 
+      parent="sale.product_menu_catalog" 
+      action="odoo_emanuel.action_window_costo_unico"
+      groups="sales_team.group_sale_salesman" 
+      sequence="19"/>
 
   </data>
 </odoo>
