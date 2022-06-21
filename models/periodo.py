@@ -52,8 +52,13 @@ año=[
 class periodo(models.Model):
     _name = 'odoo_emanuel.periodo'
     _description = 'Periodo'
-    #_rec_name = 'name'
+    _rec_name = 'periodo_name'
 
-
+    periodo_name = fields.Char('Nombre', compute='_compute_periodo_name', store=True)
     mes = fields.Selection(meses)
-    año = fields.Selection(año)
+    anio = fields.Selection(año, 'Año')
+
+    @api.depends('mes','anio')
+    def _compute_periodo_name(self):
+        for periodo in self:
+            periodo.periodo_name = '%s / %s' % (periodo.mes, periodo.anio)

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from email.policy import default
-from typing_extensions import Required
+#from typing_extensions import Required
 from odoo import models, fields, api
 
 
@@ -19,9 +19,8 @@ class servicio_emanuel(models.Model):
 class linea_costo_unico(models.Model):
     _name = 'odoo_emanuel.linea_costo_unico'
     _description = 'Linea de Costo Unico'
-    #_rec_name = 'name'
 
-    servicio_emanuel_id = fields.Many2one('odoo_emanuel.servicio_emanuel', string="Servicio Emanuel")
+    servicio_emanuel_id = fields.Many2one('odoo_emanuel.servicio_emanuel', string="Servicio Emanuel", required=True)
     periodo_desde = fields.Many2one('odoo_emanuel.periodo', required=True)
     periodo_hasta = fields.Many2one('odoo_emanuel.periodo', required=True)
     costo = fields.Float('Costo',required=True)

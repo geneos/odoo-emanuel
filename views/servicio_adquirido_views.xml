@@ -1,0 +1,94 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+
+    <record model="ir.ui.view" id="odoo_emanuel.servicio_adquirido">
+      <field name="name">odoo_emanuel servicio_adquirido</field>
+      <field name="model">odoo_emanuel.servicio_adquirido</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="servicio"/>
+          <field name="partner_id"/>
+          <field name="periodo_inicio"/>
+          <field name="monto_total"/>
+          <field name="cantidad_cuotas"/>
+        </tree>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="odoo_emanuel.linea_servicio_adquirido">
+      <field name="name">odoo_emanuel linea_servicio_adquirido</field>
+      <field name="model">odoo_emanuel.linea_servicio_adquirido</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="nro_cuota"/>
+          <field name="servicio"/>
+          <field name="fecha_vencimiento"/>
+          <field name="monto"/>
+          <field name="saldo"/>
+          <field name="fecha_pago"/>
+          <field name="pagado"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="odoo_emanuel.servicio_adquirido_form" model="ir.ui.view">
+      <field name="name">servicio_adquirido.view.form</field>
+      <field name="model">odoo_emanuel.servicio_adquirido</field>
+      <field name="arch" type="xml">
+        <form>
+          <sheet>
+            <group>
+              <field name="servicio"/>
+              <field name="partner_id"/>
+              <field name="periodo_inicio"/>
+              <field name="monto_total"/>
+              <field name="cantidad_cuotas"/>
+              <button name="action_generar_lineas_servicio_adquirido"
+                      class="oe_link"
+                      type="object"
+                      string="Generar cuotas del servicio">
+              </button>
+              <field name="linea_servicio_adquirido_ids"/>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record id="odoo_emanuel.linea_servicio_adquirido_form" model="ir.ui.view">
+      <field name="name">linea_servicio_adquirido.view.form</field>
+      <field name="model">odoo_emanuel.linea_servicio_adquirido</field>
+      <field name="arch" type="xml">
+        <form>
+          <sheet>
+            <group>
+              <!--<field name="servicio_adquirido_id"/>-->
+              <field name="nro_cuota"/>
+              <field name="servicio"/>
+              <field name="fecha_vencimiento"/>
+              <field name="monto"/>
+              <field name="saldo"/>
+              <field name="fecha_pago"/>
+              <field name="pagado"/>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+    <!-- actions opening views on models -->
+
+    <record model="ir.actions.act_window" id="odoo_emanuel.action_window">
+      <field name="name">Servicios Emanuel</field>
+      <field name="res_model">odoo_emanuel.servicio_emanuel</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="odoo_emanuel.action_window_costo_unico">
+      <field name="name">Servicios Emanuel Costo Unico</field>
+      <field name="res_model">odoo_emanuel.linea_costo_unico</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+    
+  </data>
+</odoo>
