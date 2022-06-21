@@ -18,6 +18,8 @@
     'data': [
         'security/ir.model.access.csv',
         'views/servicio_emanuel_views.xml',
+        'views/servicio_adquirido_views.xml',
+        'views/res_partner_views.xml',
         'views/templates.xml',
     ],
     'installable': True,
