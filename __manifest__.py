@@ -21,6 +21,8 @@
         'views/servicio_adquirido_views.xml',
         'views/res_partner_views.xml',
         'views/templates.xml',
+        'views/tasa.xml',
+
     ],
     'installable': True,
     'auto_install': False,

@@ -4,3 +4,4 @@ access_odoo_emanuel_linea_costo_unico,odoo_emanuel.linea_costo_unico,model_odoo_
 access_odoo_emanuel_periodo,odoo_emanuel.periodo,model_odoo_emanuel_periodo,base.group_user,1,1,1,1
 access_odoo_emanuel_servicio_adquirido,odoo_emanuel.servicio_adquirido,model_odoo_emanuel_servicio_adquirido,base.group_user,1,1,1,1
 access_odoo_emanuel_linea_servicio_adquirido,odoo_emanuel.linea_servicio_adquirido,model_odoo_emanuel_linea_servicio_adquirido,base.group_user,1,1,1,1
+access_odoo_emanuel_tasa,odoo_emanuel.tasa,model_odoo_emanuel_tasa,base.group_user,1,1,1,1
