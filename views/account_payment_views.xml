@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="view_account_payment_group_form" model="ir.ui.view">
+        <field name="name">account.payment.group.form</field>
+        <field name="model">account.payment.group</field>
+        <field name="inherit_id" ref="account_payment_group.view_account_payment_group_form"/>
+        <field name="arch" type="xml">
+            <field name="to_pay_move_line_ids" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="selected_debt" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="payment_difference" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <xpath expr="//field[@name='partner_id']" position='after'>
+                <field name="diferencia_pago"/>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position='after'>
+                <field name="deuda_cuotas_seleccionadas"/>
+            </xpath>
+            <xpath expr="//page[3]" position="attributes">
+                <attribute name="attrs">{'invisible':[('es_cobro_servicios', '=', True)]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position='after'>
+                <field name="es_cobro_servicios" string="Es cobro de Servicios" attrs="{'readonly': [('state', '!=', 'draft')]}" />
+	        </xpath>
+            <xpath expr="//page[4]" position='before'>
+                <page string="Cuotas de servicios" attrs="{'invisible': [('es_cobro_servicios', '=', False)]}">
+                    <!-- <button name="Seleccionar cuotas" string="Seleccionar cuotas" type="object"/> -->
+                    <field name="linea_cuota_servicio_adquirido_ids" domain="[('pagado','=',False),('servicio_adquirido_id.partner_id.id', '=', partner_id)]">
+                        <tree edit="false">
+                            <field name="nro_cuota"/>
+                            <field name="periodo"/>
+                            <field name="servicio"/>
+                            <field name="fecha_vencimiento"/>
+                            <field name="monto"/>
+                            <field name="monto_interes"/>
+                            <field name="monto_capital"/>
+                            <field name="saldo"/>
+                            <field name="fecha_pago"/>
+                            <field name="pagado"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

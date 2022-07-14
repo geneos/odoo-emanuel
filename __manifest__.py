@@ -19,10 +19,11 @@
         'security/ir.model.access.csv',
         'views/servicio_emanuel_views.xml',
         'views/servicio_adquirido_views.xml',
+        'views/account_payment_views.xml',
         'views/res_partner_views.xml',
         'views/templates.xml',
         'views/tasa.xml',
-
+        'views/periodo.xml',
     ],
     'installable': True,
     'auto_install': False,
