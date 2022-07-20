@@ -65,7 +65,7 @@
       <field name="name">linea_servicio_adquirido.view.form</field>
       <field name="model">odoo_emanuel.linea_servicio_adquirido</field>
       <field name="arch" type="xml">
-        <form>
+        <form create="false">
           <sheet>
             <group>
               <!--<field name="servicio_adquirido_id"/>-->

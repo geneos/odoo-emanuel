@@ -2,6 +2,7 @@
 from traceback import print_tb
 from odoo import models, fields, api
 from datetime import date, datetime
+from odoo.exceptions import UserError
 
 class account_payment_group (models.Model):
     _inherit = ['account.payment.group']
@@ -49,8 +50,8 @@ class account_payment_group (models.Model):
                 dias = (self.payment_date - c.fecha_vencimiento).days
                 tasa_diaria = tasa_actual.tasa/30
                 interes = tasa_diaria*dias*monto_interes
-                import pdb
-                pdb.set_trace()
+                #import pdb
+                #pdb.set_trace()
                 if interes>0:
                     mes = date.today().month
                     if mes < 10:
@@ -88,5 +89,7 @@ class account_payment_group (models.Model):
                         'pagado' : False,
                         'descripcion' : f"Interes por cuota {c.periodo} del servicio {c.servicio.name}"
                     }
-                    linea_servicio_adquirido.create(vals)                   
+                    linea_servicio_adquirido.create(vals)
+        if (monto_pagado_residual>0):
+            raise UserError('Necesita imputar el total, seleccione mas cuotas.')
         return res

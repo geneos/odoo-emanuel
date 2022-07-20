@@ -61,7 +61,7 @@ class servicio_adquirido(models.Model):
                     }
             self.env['odoo_emanuel.linea_servicio_adquirido'].create(cuota)            
             periodo_actual = periodo_actual.get_periodo_siguiente()
-
+            
 class linea_servicio_adquirido(models.Model):
     _name = 'odoo_emanuel.linea_servicio_adquirido'
     _description = 'Linea servicio adquirido'

@@ -6,9 +6,9 @@
       <field name="name">odoo_emanuel periodo</field>
       <field name="model">odoo_emanuel.periodo</field>
       <field name="arch" type="xml">
-        <tree>
+        <tree edit="false">
           <field name="periodo_name"/> 
-          <field name="mes"/> 
+          <field name="mes" /> 
           <field name="anio"/>     
         </tree>
       </field>
@@ -18,7 +18,7 @@
       <field name="name">periodo.view.form</field>
       <field name="model">odoo_emanuel.periodo</field>
       <field name="arch" type="xml">
-        <form>
+        <form edit="false">
           <sheet>
             <group>
               <field name="periodo_name"/> 
