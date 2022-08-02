@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_reporte_servicio_cobro" model="ir.ui.view">
+            <field name="name">Reporte servicio cobrados</field>
+            <field name="model">odoo_emanuel.reporte_servicio_cobro</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="servicio"/>
+                        <field name="fecha_desde"/>
+                        <field name="fecha_hasta"/> 
+                    </group>
+                    <footer>
+                        <button 
+                                name="imprimir_reporte" 
+                                string="Imprimir reporte" 
+                                type="object" class="btn-primary"/>
+                        <button 
+                                string="Cancel" 
+                                class="btn-secondary" 
+                                special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_view_servicio_report_wizard" model="ir.actions.act_window">
+            <field name="name">Reporte servicios cobrados</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">odoo_emanuel.reporte_servicio_cobro</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+        
+    <menuitem 
+            name="Reporte servicios cobrados" 
+            id="servicio_reporte_menu" 
+            parent="sale.menu_report_product_all" 
+            action="action_view_servicio_report_wizard"
+            />
+</data>
+
+</odoo>

@@ -2,6 +2,7 @@
 
 import datetime
 from email.policy import default
+import string
 from odoo import models, fields, api
 from odoo.exceptions import UserError
 #from odoo_emanuel.models.account_payment import account_payment
@@ -85,3 +86,11 @@ class linea_servicio_adquirido(models.Model):
         if not self.servicio.es_servicio_interes:
             self.descripcion = str(self.servicio.name)+": Pago cuota "+str(self.nro_cuota)+" del periodo "+str(self.periodo)
 
+class monto_recibo_cuota(models.Model):
+    _name = 'odoo_emanuel.monto_recibo_cuota'
+    _description = 'Historico monto recibo cuota'
+
+    linea_servicio_adquirido_id = fields.Many2one('odoo_emanuel.linea_servicio_adquirido',string='Linea servicio adquirido')
+    recibo_id = fields.Many2one('account.payment.group',string='Recibo')
+    monto = fields.Float('Monto pagado')
+    

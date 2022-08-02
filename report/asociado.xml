@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- <data> 
+      file="odoo_emanuel.servicios_vencer_vencido_template"
+            attachment_use="False"
+            -->
+        <report 
+            id="servicios_asociado"
+            model="odoo_emanuel.reporte_asociado"
+            string="Servicios a vencer"
+            report_type="qweb-pdf"
+            name="odoo_emanuel.servicios_asociado_template"
+            menu="False"
+          
+        />
+        <template id="servicios_asociado_template">
+            <t t-call="web.html_container">
+                <!-- <t t-foreach="docs" t-as="o"> -->
+                    <t t-call="web.external_layout">
+                        <div class="page">
+                            <br> </br>
+                            <h3>
+                                <td> <span  t-esc="asociado" /></td> 
+                            </h3>
+                            <br> </br>
+                            <table class="table table-condensed table-bordered">
+                                <thead>
+                                    <th class="text-center" style="width: 25%">Servicio</th>
+                                    <th class="text-center" style="width: 25%">Cuota</th>
+                                    <th class="text-center" style="width: 25%">Estado</th>
+                                    <th class="text-center" style="width: 25%">Saldo</th>
+                                </thead>
+                                <tbody>
+                                    <!-- <t t-debug="pdb"></t> -->
+                                    <t t-foreach="docs" t-as="cuota">
+                                        <tr>     
+                                            <td class="text-center"><span  t-esc="cuota['servicio']" /></td>
+                                            <td class="text-center"><span  t-esc="cuota['cuota']" /></td>
+                                            <td class="text-center"><span t-esc="cuota['estado']" /></td>
+                                            <td class="text-center"><span t-esc="cuota['saldo']" /></td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </t>
+                <!-- </t> -->
+            </t>
+        </template>
+    <!-- </data> -->
+</odoo>

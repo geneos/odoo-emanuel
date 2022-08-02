@@ -5,6 +5,15 @@
         <field name="model">account.payment.group</field>
         <field name="inherit_id" ref="account_payment_group.view_account_payment_group_form"/>
         <field name="arch" type="xml">
+            <xpath expr="//button[@name='cancel']" position='attributes'>
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_draft']" position='attributes'>
+                <attribute name="attrs">{'invisible':[('state', '=', 'posted')]}</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_draft']" position='after'>
+                <button name="cancelar" string="Cancelar" type="object" class="btn btn-primary" attrs="{'invisible':[('state', '!=', 'posted')]}"/>
+            </xpath>
             <field name="to_pay_move_line_ids" position="attributes">
                 <attribute name="invisible">1</attribute>
             </field>

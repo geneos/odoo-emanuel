@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <report 
+            id="servicios_cobro"
+            model="odoo_emanuel.reporte_servicio"
+            string="Servicios"
+            report_type="qweb-pdf"
+            name="odoo_emanuel.servicios_cobro_template"
+            menu="False"
+          
+        />
+        <template id="servicios_cobro_template">
+            <t t-call="web.html_container">
+                    <t t-call="web.external_layout">
+                        <div class="page">
+                           <br> </br>
+                            <h3>
+                                <td> <span  t-esc="servicio" /></td> 
+                            </h3>
+                            <br> </br>
+                            <table class="table table-condensed table-bordered">
+                                <thead>
+                                    <th class="text-center" style="width: 25%">Asociado</th>
+                                    <th class="text-center" style="width: 25%">Cuota</th>
+                                    <th class="text-center" style="width: 25%">Fecha de pago</th>
+                                    <th class="text-center" style="width: 25%">Monto</th>
+                                </thead>
+                                <tbody>
+                                    <!-- <t t-debug="pdb"></t> -->
+                                    <t t-foreach="docs" t-as="cuota">
+                                        <tr>     
+                                            <td class="text-center"><span  t-esc="cuota['asociado']" /></td>
+                                            <td class="text-center"><span  t-esc="cuota['cuota']" /></td>
+                                            <td class="text-center"><span t-esc="cuota['fecha']" /></td>
+                                            <td class="text-center"><span t-esc="cuota['monto']" /></td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                                            <th class="text-center" style="width: 25%">Total</th>
+                                            <td class="text-center"><span  /></td>
+                                            <td class="text-center"><span  /></td>
+                                            <td class="text-center"><span t-esc="total" /></td>
+                            </table>
+                        </div>
+                    </t>
+            </t>
+        </template>
+</odoo>

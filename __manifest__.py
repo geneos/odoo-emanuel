@@ -24,6 +24,10 @@
         'views/templates.xml',
         'views/tasa.xml',
         'views/periodo.xml',
+        'report/asociado.xml',
+        'wizards/reporte_asociado.xml',
+        'report/servicio_cobros.xml',
+        'wizards/reporte_servicio_cobro.xml'
     ],
     'installable': True,
     'auto_install': False,

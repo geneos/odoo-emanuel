@@ -31,16 +31,33 @@ class account_payment_group (models.Model):
         cuotas = self.linea_cuota_servicio_adquirido_ids
         monto_pagado_residual = self.payments_amount
         tasa_actual = self.env['odoo_emanuel.tasa'].search([])
+
+        monto_recibo_cuota = self.env['odoo_emanuel.monto_recibo_cuota']
+
         for c in cuotas:
             #import pdb
             #pdb.set_trace()
             if (float(c.saldo) <= float(monto_pagado_residual)):
+                vals = {
+                    'linea_servicio_adquirido_id': c.id,
+                    'recibo_id': self.id,
+                    'monto': c.saldo        
+                }
+                monto_recibo_cuota.create(vals) 
                 c.pagado = True
                 monto_interes = c.saldo
                 c.saldo = 0
                 monto_pagado_residual = monto_pagado_residual - c.monto
                 c.fecha_pago = date.today()
+
             else:
+                monto_recibo_cuota = self.env['odoo_emanuel.monto_recibo_cuota']
+                vals = {
+                    'linea_servicio_adquirido_id': c.id,
+                    'recibo_id': self.id,
+                    'monto': monto_pagado_residual       
+                }
+                monto_recibo_cuota.create(vals) 
                 c.saldo = c.saldo-monto_pagado_residual
                 monto_interes = monto_pagado_residual
                 monto_pagado_residual = 0
@@ -90,6 +107,24 @@ class account_payment_group (models.Model):
                         'descripcion' : f"Interes por cuota {c.periodo} del servicio {c.servicio.name}"
                     }
                     linea_servicio_adquirido.create(vals)
-        if (monto_pagado_residual>0):
+        if (round(monto_pagado_residual,4)>0):
             raise UserError('Necesita imputar el total, seleccione mas cuotas.')
         return res
+    
+  
+    def cancelar(self):
+        cuotas = self.linea_cuota_servicio_adquirido_ids
+        pagos = self.payment_ids
+        # Pasa la linea de pago a cancelado
+        for p in pagos:
+            p.state = 'cancelled'
+        # Pasa el estado del recibo a cancelado
+        self.state='cancel'
+        monto_pagado_residual = self.diferencia_pago+self.deuda_cuotas_seleccionadas
+        for c in cuotas:
+            if (len(cuotas)==1):
+                c.saldo=c.saldo+monto_pagado_residual
+            else:
+                monto = self.env['odoo_emanuel.monto_recibo_cuota'].search([('linea_servicio_adquirido_id','=',c.id),('recibo_id','=',self.id)]).monto
+                c.saldo = c.saldo+monto
+            c.pagado=False
