@@ -13,9 +13,7 @@
                                 <field name="name"/>
                             </tree>
                         </field>
-                        <field name="vencido"/>
-                        <field name="por_vencer"/>
-                        <field name="pagado"/> 
+                        <field name="tipo"/>
                     </group>
                     <footer>
                         <button 

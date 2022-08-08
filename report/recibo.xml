@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_payment_group_document" inherit_id="l10n_ar_ux.report_payment_group_document">
+        <!-- <xpath expr="//div[@id='informations']" position="before">
+            <t t-if="o.es_cobro_servicios"> -->
+                <xpath expr="//div/table[@name='matching_table']" position="replace">
+                    <t t-if="o.es_cobro_servicios">
+                        <table class="table table-sm o_main_table" name="table">
+                            <thead>
+                                <tr>
+                                    <th><span>Cuotas Imputadas</span></th>
+                                    <th class="text-center"><span>Periodo</span></th>
+                                    <th class="text-center"><span>Servicio</span></th>
+                                    <th class="text-center"><span>Fecha venc</span></th>
+                                    <th class="text-center"><span>Monto</span></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="o.with_context(payment_group_id=o.id).linea_cuota_servicio_adquirido_ids" t-as="line">
+                                    <tr>
+                                        <td class="text-center">
+                                            <span t-field='line.nro_cuota'/>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="text-nowrap" t-field="line.periodo.periodo_name"/>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="text-nowrap" t-field="line.servicio.name"/>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="text-nowrap" t-field="line.fecha_vencimiento"/>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="text-nowrap" t-field="o.env['odoo_emanuel.monto_recibo_cuota'].search([('recibo_id','=',o.id),('linea_servicio_adquirido_id', '=', line.id)]).monto"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="4"><strong><span>Total Imputado</span></strong></td>
+                                    <td class="text-right">
+                                        <strong><span class="text-nowrap" t-raw="o.unmatched_amount + o.matched_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></strong>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </t>
+                    <t t-if="not o.es_cobro_servicios">
+                        <table class="table table-sm o_main_table" name="table">
+                        <thead>
+                    <tr>
+                        <th><span>Comprobantes Imputados</span></th>
+                        <th class="text-center"><span>Fecha Venc.</span></th>
+                        <th class="text-right"><span>Importe Original</span></th>
+                        <th class="text-right"><span>Importe Imputado</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="o.with_context(payment_group_id=o.id).matched_move_line_ids" t-as="line">
+                        <tr>
+                            <td><span t-field='line.move_id.display_name'/></td>
+                            <td class="text-center">
+                                <span class="text-nowrap" t-field="line.date_maturity"/>
+                            </td>
+                            <td class="text-right o_price_total">
+                                <span class="text-nowrap" t-raw="(o.partner_type == 'supplier' and -1.0 or 1.0) * line.balance" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                            </td>
+                            <td class="text-right o_price_total">
+                                <span class="text-nowrap" t-raw="(o.partner_type == 'supplier' and -1.0 or 1.0) * line.payment_group_matched_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                            </td>
+                        </tr>
+                    </t>
+                    <tr t-if="o.unmatched_amount">
+                        <td>A cuenta</td>
+                        <td class="text-center"/>
+                        <td class="text-right o_price_total"/>
+                        <td class="text-right o_price_total">
+                            <span class="text-nowrap" t-field="o.unmatched_amount"/>
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3"><strong><span>Total Imputado</span></strong></td>
+                        <td class="text-right">
+                            <strong><span class="text-nowrap" t-raw="o.unmatched_amount + o.matched_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></strong>
+                        </td>
+                    </tr>
+                </tfoot>
+                </table>
+                    </t>                
+                </xpath>
+                <xpath expr="//div/table[@name='open_table']" position="replace">
+                <t t-if="o.es_cobro_servicios">
+                </t>
+                <t t-if="not o.es_cobro_servicios">
+                 <table class="table table-sm o_main_table" name="open_table" t-if="o.partner_type=='customer'" groups="l10n_ar_ux.group_include_pending_receivable_documents">
+                <thead>
+                    <tr>
+                        <th><span>Comprobantes Pendientes al</span><span t-raw="datetime.datetime.today()" t-options='{"widget": "date"}'/></th>
+                        <th class="text-center"><span>Fecha Venc.</span></th>
+                        <th class="text-right"><span>Importe Original</span></th>
+                        <th class="text-right"><span>Saldo</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="o.env['account.move.line'].search([('partner_id', '=', o.partner_id.commercial_partner_id.id), ('account_id.internal_type', '=', o.partner_type=='customer' and 'receivable' or 'payable'), ('reconciled', '=', False), ('account_id.deprecated', '=', False), ('move_id.state', '=', 'posted'), ('company_id', '=', o.company_id.id)])" t-as="line">
+                        <tr>
+                            <td><span t-field='line.move_id.display_name'/></td>
+                            <td class="text-center">
+                                <span class="text-nowrap" t-field="line.date_maturity"/>
+                            </td>
+                            <td class="text-right o_price_total">
+                                <span class="text-nowrap" t-field="line.balance"/>
+                            </td>
+                            <td class="text-right o_price_total">
+                                <span class="text-nowrap" t-field="line.amount_residual"/>
+                            </td>
+                        </tr>
+                    </t>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3"><strong><span>Total Pendiente</span></strong></td>
+                        <td class="text-right">
+                            <strong><span class="text-nowrap" t-raw="sum(o.env['account.move.line'].search([('partner_id', '=', o.partner_id.commercial_partner_id.id), ('account_id.internal_type', '=', o.partner_type=='customer' and 'receivable' or 'payable'), ('reconciled', '=', False), ('account_id.deprecated', '=', False), ('move_id.state', '=', 'posted'), ('company_id', '=', o.company_id.id)]).mapped('amount_residual'))" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></strong>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+                </t>
+                </xpath>
+            <!-- </t>
+        </xpath> -->
+    </template>
+</odoo>

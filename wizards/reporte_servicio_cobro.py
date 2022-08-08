@@ -25,7 +25,7 @@ class ReporteServicioWizard(models.TransientModel):
                 'partner_id',
                 'name'
                 ]
-        recibos_filtrados = recibos.search_read(domain,campos, order='partner_id')
+        recibos_filtrados = recibos.search_read(domain,campos, order='payment_date')
 
         total=0
         docs=[]
@@ -47,13 +47,11 @@ class ReporteServicioWizard(models.TransientModel):
                 if not monto:
                     monto = 0
                 else:
-                    monto=monto[0]['monto']
-                print("HOLAAAAAAA")
-                print(monto)        
+                    monto=monto[0]['monto']   
                 docs.append({
                     'asociado':r['partner_id'][1],
                     'cuota': linea.search([('id','=',l)]).periodo.periodo_name,
-                    'fecha': r['payment_date'],
+                    'fecha': r['payment_date'].strftime("%d/%m/%Y"),
                     'monto': round(monto,2)
                 })
                 total+=monto

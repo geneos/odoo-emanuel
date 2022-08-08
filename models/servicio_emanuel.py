@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from dataclasses import field
 from email.policy import default
 #from typing_extensions import Required
 from odoo import models, fields, api
@@ -15,6 +16,7 @@ class servicio_emanuel(models.Model):
     es_servicio_costo_unico = fields.Boolean('Es Servicio de Costo Unico', default=False)
     costo_unico_servicio = fields.One2many('odoo_emanuel.linea_costo_unico', 'servicio_emanuel_id', 'Costo historico')
     activo = fields.Boolean('Activo', default=True)
+    cuenta_contable = fields.Many2one('account.account', 'Cuenta contable')
 
 class linea_costo_unico(models.Model):
     _name = 'odoo_emanuel.linea_costo_unico'

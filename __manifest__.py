@@ -27,6 +27,7 @@
         'report/asociado.xml',
         'wizards/reporte_asociado.xml',
         'report/servicio_cobros.xml',
+        'report/recibo.xml',
         'wizards/reporte_servicio_cobro.xml'
     ],
     'installable': True,

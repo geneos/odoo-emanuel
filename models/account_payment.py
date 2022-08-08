@@ -28,87 +28,88 @@ class account_payment_group (models.Model):
     def post(self):  
         res = super(account_payment_group, self).post()
         #res['deuda_cuota_seleccionadas'] = foo
-        cuotas = self.linea_cuota_servicio_adquirido_ids
-        monto_pagado_residual = self.payments_amount
-        tasa_actual = self.env['odoo_emanuel.tasa'].search([])
+        if self.es_cobro_servicios:
+            cuotas = self.linea_cuota_servicio_adquirido_ids
+            monto_pagado_residual = self.payments_amount
+            tasa_actual = self.env['odoo_emanuel.tasa'].search([])
 
-        monto_recibo_cuota = self.env['odoo_emanuel.monto_recibo_cuota']
+            monto_recibo_cuota = self.env['odoo_emanuel.monto_recibo_cuota']
 
-        for c in cuotas:
-            #import pdb
-            #pdb.set_trace()
-            if (float(c.saldo) <= float(monto_pagado_residual)):
-                vals = {
-                    'linea_servicio_adquirido_id': c.id,
-                    'recibo_id': self.id,
-                    'monto': c.saldo        
-                }
-                monto_recibo_cuota.create(vals) 
-                c.pagado = True
-                monto_interes = c.saldo
-                c.saldo = 0
-                monto_pagado_residual = monto_pagado_residual - c.monto
-                c.fecha_pago = date.today()
-
-            else:
-                monto_recibo_cuota = self.env['odoo_emanuel.monto_recibo_cuota']
-                vals = {
-                    'linea_servicio_adquirido_id': c.id,
-                    'recibo_id': self.id,
-                    'monto': monto_pagado_residual       
-                }
-                monto_recibo_cuota.create(vals) 
-                c.saldo = c.saldo-monto_pagado_residual
-                monto_interes = monto_pagado_residual
-                monto_pagado_residual = 0
-            #c.save
-            if (self.payment_date > c.fecha_vencimiento) and not (c.servicio.es_servicio_interes):
-                
-                dias = (self.payment_date - c.fecha_vencimiento).days
-                tasa_diaria = tasa_actual.tasa/30
-                interes = tasa_diaria*dias*monto_interes
+            for c in cuotas:
                 #import pdb
                 #pdb.set_trace()
-                if interes>0:
-                    mes = date.today().month
-                    if mes < 10:
-                        mes = str(0)+str(mes)
-                    periodo_actual = self.env['odoo_emanuel.periodo'].search([('mes','=',mes),('anio','=',date.today().year)])[0]
-                    periodo_siguiente = periodo_actual.get_periodo_siguiente()
-                    servicio_interes = self.env['odoo_emanuel.servicio_emanuel'].search([('es_servicio_interes','=',True)])
-                    servicio_interes_partner = self.env['odoo_emanuel.servicio_adquirido'].search([('servicio','=',servicio_interes[0].id),('partner_id','=',self.partner_id.id)])
-                    
-                    if not servicio_interes_partner:
-                        #Creo servicio
-                        servicio_adquirido = self.env['odoo_emanuel.servicio_adquirido']
-                        vals = {
-                            'servicio' : servicio_interes.id,
-                            'partner_id' : self.partner_id.id,
-                            'periodo_inicio' : periodo_siguiente.id,
-                            'monto_total' : 0,
-                            'entrega_inicial' : 0,
-                            'monto_financiado' : 0,
-                            'cantidad_cuotas' : 1
-                        }
-                        servicio_interes_partner = servicio_adquirido.create(vals)
-                    #Creo cuotas
-                    linea_servicio_adquirido = self.env['odoo_emanuel.linea_servicio_adquirido']
+                if (float(c.saldo) <= float(monto_pagado_residual)):
                     vals = {
-                        'servicio_adquirido_id' : servicio_interes_partner.id,
-                        'nro_cuota' : 1,
-                        'servicio' : servicio_interes.id,
-                        'periodo' : periodo_siguiente.id,
-                        'fecha_vencimiento' : datetime(int(periodo_siguiente.anio), int(periodo_siguiente.mes), 10).date(),
-                        'monto' : float(interes),
-                        'monto_interes' : 0,
-                        'monto_capital' : 0,
-                        'saldo' : float(interes),
-                        'pagado' : False,
-                        'descripcion' : f"Interes por cuota {c.periodo} del servicio {c.servicio.name}"
+                        'linea_servicio_adquirido_id': c.id,
+                        'recibo_id': self.id,
+                        'monto': c.saldo        
                     }
-                    linea_servicio_adquirido.create(vals)
-        if (round(monto_pagado_residual,4)>0):
-            raise UserError('Necesita imputar el total, seleccione mas cuotas.')
+                    monto_recibo_cuota.create(vals) 
+                    c.pagado = True
+                    monto_interes = c.saldo
+                    c.saldo = 0
+                    monto_pagado_residual = monto_pagado_residual - c.monto
+                    c.fecha_pago = date.today()
+
+                else:
+                    monto_recibo_cuota = self.env['odoo_emanuel.monto_recibo_cuota']
+                    vals = {
+                        'linea_servicio_adquirido_id': c.id,
+                        'recibo_id': self.id,
+                        'monto': monto_pagado_residual       
+                    }
+                    monto_recibo_cuota.create(vals) 
+                    c.saldo = c.saldo-monto_pagado_residual
+                    monto_interes = monto_pagado_residual
+                    monto_pagado_residual = 0
+                #c.save
+                if (self.payment_date > c.fecha_vencimiento) and not (c.servicio.es_servicio_interes):
+                    
+                    dias = (self.payment_date - c.fecha_vencimiento).days
+                    tasa_diaria = tasa_actual.tasa/30
+                    interes = tasa_diaria*dias*monto_interes
+                    #import pdb
+                    #pdb.set_trace()
+                    if interes>0:
+                        mes = date.today().month
+                        if mes < 10:
+                            mes = str(0)+str(mes)
+                        periodo_actual = self.env['odoo_emanuel.periodo'].search([('mes','=',mes),('anio','=',date.today().year)])[0]
+                        periodo_siguiente = periodo_actual.get_periodo_siguiente()
+                        servicio_interes = self.env['odoo_emanuel.servicio_emanuel'].search([('es_servicio_interes','=',True)])                    
+                        if not servicio_interes:
+                            #Creo servicio
+                            servicio_adquirido = self.env['odoo_emanuel.servicio_adquirido']
+                            vals = {
+                                'servicio' : servicio_interes.id,
+                                'partner_id' : self.partner_id.id,
+                                'periodo_inicio' : periodo_siguiente.id,
+                                'monto_total' : 0,
+                                'entrega_inicial' : 0,
+                                'monto_financiado' : 0,
+                                'cantidad_cuotas' : 1
+                            }
+                            servicio_interes_partner = servicio_adquirido.create(vals)
+                        else:
+                            servicio_interes_partner = self.env['odoo_emanuel.servicio_adquirido'].search([('servicio','=',servicio_interes[0].id),('partner_id','=',self.partner_id.id)])
+                        #Creo cuotas
+                        linea_servicio_adquirido = self.env['odoo_emanuel.linea_servicio_adquirido']
+                        vals = {
+                            'servicio_adquirido_id' : servicio_interes_partner.id,
+                            'nro_cuota' : 1,
+                            'servicio' : servicio_interes.id,
+                            'periodo' : periodo_siguiente.id,
+                            'fecha_vencimiento' : datetime(int(periodo_siguiente.anio), int(periodo_siguiente.mes), 10).date(),
+                            'monto' : float(interes),
+                            'monto_interes' : 0,
+                            'monto_capital' : 0,
+                            'saldo' : float(interes),
+                            'pagado' : False,
+                            'descripcion' : f"Interes por cuota {c.periodo} del servicio {c.servicio.name}"
+                        }
+                        linea_servicio_adquirido.create(vals)
+            if (round(monto_pagado_residual,4)>0):
+                raise UserError('Necesita imputar el total, seleccione mas cuotas.')
         return res
     
   

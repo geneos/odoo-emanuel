@@ -27,6 +27,7 @@
     </record>
 
     <record forcecreate="True" id="odoo_emauel_tasa" model="odoo_emanuel.tasa">
+      <field name="tasa">0</field>
     </record>
 
     <!-- actions opening views on models -->

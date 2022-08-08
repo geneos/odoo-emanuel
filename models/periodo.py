@@ -1,4 +1,5 @@
 from odoo import models, fields, api
+from odoo.exceptions import ValidationError
 
 meses=[
         ('01','01'),
@@ -78,3 +79,8 @@ class periodo(models.Model):
             m_nuevo = str(0)+str(m_nuevo)
         periodo = Periodo.search([('mes','=',m_nuevo),('anio','=',a_nuevo)])[0]
         return periodo
+
+    @api.constrains('mes','anio')
+    def _check_unico(self):
+        if self.env['odoo_emanuel.periodo'].search([('anio','=',self.anio),('mes','=',self.mes),('id','!=', self.id)]):
+            raise ValidationError('El periodo debe ser unico')

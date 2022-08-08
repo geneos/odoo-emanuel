@@ -17,30 +17,41 @@
             <t t-call="web.html_container">
                 <!-- <t t-foreach="docs" t-as="o"> -->
                     <t t-call="web.external_layout">
+                        <div class="text-center">
+                            <h1>
+                                <span t-esc="titulo" />
+                            </h1>
+                        </div>
                         <div class="page">
-                            <br> </br>
-                            <h3>
-                                <td> <span  t-esc="asociado" /></td> 
-                            </h3>
+                            <hr> </hr>
+                            <h5><strong><span  t-esc="nombre" /></strong> </h5>
+                            <strong> Direccion:  </strong><span t-esc="direccion" /> <br/>
+                            <strong>CUIT: </strong> <span t-esc="cuit" />   <br/>
+                            <strong>VAT cond: </strong> <span t-esc="cond_iva" /> 
+                            <hr> </hr>
                             <br> </br>
                             <table class="table table-condensed table-bordered">
                                 <thead>
                                     <th class="text-center" style="width: 25%">Servicio</th>
-                                    <th class="text-center" style="width: 25%">Cuota</th>
-                                    <th class="text-center" style="width: 25%">Estado</th>
+                                    <th class="text-center" style="width: 25%">Periodo</th>
+                                    <th class="text-center" style="width: 25%"><span t-esc="columna"/></th>
                                     <th class="text-center" style="width: 25%">Saldo</th>
                                 </thead>
                                 <tbody>
                                     <!-- <t t-debug="pdb"></t> -->
                                     <t t-foreach="docs" t-as="cuota">
                                         <tr>     
-                                            <td class="text-center"><span  t-esc="cuota['servicio']" /></td>
-                                            <td class="text-center"><span  t-esc="cuota['cuota']" /></td>
-                                            <td class="text-center"><span t-esc="cuota['estado']" /></td>
+                                            <td class="text-center"><span t-esc="cuota['servicio']" /></td>
+                                            <td class="text-center"><span t-esc="cuota['periodo']" /></td>
+                                            <td class="text-center"><span t-esc="cuota['fecha']" /></td>
                                             <td class="text-center"><span t-esc="cuota['saldo']" /></td>
                                         </tr>
                                     </t>
                                 </tbody>
+                                    <th class="text-center" style="width: 33%">Total</th>
+                                    <td class="text-center"><span  /></td>
+                                    <td class="text-center"><span  /></td>
+                                    <td class="text-center"><span t-esc="total" /></td>
                             </table>
                         </div>
                     </t>

@@ -10,7 +10,8 @@
           <field name="name"/>
           <field name="es_servicio_interes"/>
           <field name="activo"/>
-          <field name="es_servicio_costo_unico"/>      
+          <field name="es_servicio_costo_unico"/> 
+          <field name="cuenta_contable"/>     
         </tree>
       </field>
     </record>
@@ -27,6 +28,7 @@
               <field name="activo"/>
               <field name="es_servicio_costo_unico"/>      
               <field name="costo_unico_servicio" attrs="{'invisible': [('es_servicio_costo_unico', '=', False)], 'required': [('es_servicio_costo_unico', '=', True)]}" context="{ 'default_servicio_emanuel_id':id}"/>
+              <field name="cuenta_contable"/>             
             </group>
           </sheet>
         </form>
