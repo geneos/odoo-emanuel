@@ -21,7 +21,7 @@
       <field name="name">odoo_emanuel linea_servicio_adquirido</field>
       <field name="model">odoo_emanuel.linea_servicio_adquirido</field>
       <field name="arch" type="xml">
-        <tree create="false">
+        <tree create="false" delete="false">
           <field name="nro_cuota"/>
           <field name="periodo"/>
           <field name="servicio"/>

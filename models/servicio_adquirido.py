@@ -18,15 +18,13 @@ class servicio_adquirido(models.Model):
     entrega_inicial = fields.Float('Entrega inicial',required=True)
     monto_financiado = fields.Float('Monto financiado', readonly=True)
     cantidad_cuotas = fields.Integer('Cantidad de cuotas',required=True)
-    linea_servicio_adquirido_ids = fields.One2many('odoo_emanuel.linea_servicio_adquirido', 'servicio_adquirido_id', 'Cuotas')
+    linea_servicio_adquirido_ids = fields.One2many('odoo_emanuel.linea_servicio_adquirido', 'servicio_adquirido_id', 'Cuotas', ondelete='cascade')
 
     #def _compute_partner_id(self):
        
     #    self.partner_id = self.env.context.get('params').get('id')
         
-    def action_generar_lineas_servicio_adquirido(self):
-        
-        
+    def action_generar_lineas_servicio_adquirido(self):       
         self.ensure_one()
         if (self.linea_servicio_adquirido_ids):
             raise UserError('Ya fueron creadas las cuotas.')

@@ -80,6 +80,13 @@ class periodo(models.Model):
         periodo = Periodo.search([('mes','=',m_nuevo),('anio','=',a_nuevo)])[0]
         return periodo
 
+    def es_menor_igual(self, hasta):
+        print(int(self.mes))
+        print(int(hasta.mes))
+        if (self.anio < hasta.anio) or ((self.anio == hasta.anio) and (int(self.mes) <= int(hasta.mes))):
+            return True
+        return False
+
     @api.constrains('mes','anio')
     def _check_unico(self):
         if self.env['odoo_emanuel.periodo'].search([('anio','=',self.anio),('mes','=',self.mes),('id','!=', self.id)]):
