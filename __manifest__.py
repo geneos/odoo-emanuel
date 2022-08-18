@@ -28,7 +28,8 @@
         'wizards/reporte_asociado.xml',
         'report/servicio_cobros.xml',
         'report/recibo.xml',
-        'wizards/reporte_servicio_cobro.xml'
+        'wizards/reporte_servicio_cobro.xml',
+        'data/odoo_emanuel.periodo.csv'
     ],
     'installable': True,
     'auto_install': False,

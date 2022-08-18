@@ -73,8 +73,6 @@ class periodo(models.Model):
         else:
             m_nuevo = 1
             a_nuevo = int(self.anio)+1
-        #m_nuevo = (int(self.mes) > 1 and int(self.mes) + 1) or 12
-        #a_nuevo = (int(self.anio) > 1 and int(self.anio)) or self.anio + 1
         if m_nuevo < 10:
             m_nuevo = str(0)+str(m_nuevo)
         periodo = Periodo.search([('mes','=',m_nuevo),('anio','=',a_nuevo)])[0]

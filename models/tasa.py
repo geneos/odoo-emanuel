@@ -5,5 +5,5 @@ class tasa(models.Model):
     _description = 'Tasa'
     _rec_name = 'tasa'
 
-    tasa = fields.Float('Tasa', required=True)
+    tasa = fields.Float('Tasa')
    

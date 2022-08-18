@@ -5,7 +5,7 @@ from email.policy import default
 import string
 from odoo import models, fields, api
 from odoo.exceptions import UserError
-#from odoo_emanuel.models.account_payment import account_payment
+from datetime import date
 
 class servicio_adquirido(models.Model):
     _name = 'odoo_emanuel.servicio_adquirido'
@@ -19,10 +19,6 @@ class servicio_adquirido(models.Model):
     monto_financiado = fields.Float('Monto financiado', readonly=True)
     cantidad_cuotas = fields.Integer('Cantidad de cuotas',required=True)
     linea_servicio_adquirido_ids = fields.One2many('odoo_emanuel.linea_servicio_adquirido', 'servicio_adquirido_id', 'Cuotas', ondelete='cascade')
-
-    #def _compute_partner_id(self):
-       
-    #    self.partner_id = self.env.context.get('params').get('id')
         
     def action_generar_lineas_servicio_adquirido(self):       
         self.ensure_one()
@@ -31,6 +27,8 @@ class servicio_adquirido(models.Model):
         self.monto_financiado = self.monto_total - self.entrega_inicial
         Tasa = self.env['odoo_emanuel.tasa']
         tasa = Tasa.search([])[0]
+        if (float(tasa.tasa) == 0):
+            raise UserError('La tasa no puede ser 0.')
         tasa_actual = float(tasa.tasa) / float(100)
         periodo_actual = self.periodo_inicio
         balance = self.monto_financiado     
@@ -55,19 +53,47 @@ class servicio_adquirido(models.Model):
                     'monto_interes': round(interes,2),
                     'monto_capital': round(capital,2),
                     'saldo':round(valor_cuota,2),
-                    #'fecha_pago':,
                     'pagado': False
                     }
             self.env['odoo_emanuel.linea_servicio_adquirido'].create(cuota)            
             periodo_actual = periodo_actual.get_periodo_siguiente()
-            
+    
+    def write(self,values):
+        override_write = super(servicio_adquirido,self).write(values)
+        journal = self.env['account.journal'].search([('code', '=', 'Vario')], limit=1)
+        cuenta = self.env['account.account'].search([('code','=','4.1.1.01.020')], limit=1)
+        #cuenta_servicio = self.env['account.account'].search([('code','=','1.1.3.01.010')], limit=1)
+        move = self.env['account.move'].create({
+            'type': 'entry',
+            'date': date.today(),
+            'state': 'draft',     # DESPUES VA A SER PUBLICADO
+            'journal_id': journal.id,
+            'line_ids': [
+                (0, 0, {
+                    'name':'Deuda por servicio',
+                    'account_id': self.servicio.cuenta_contable, #cuenta_servicio.id, 
+                    'partner_id': self.partner_id.id,
+                    'debit': self.monto_financiado,
+                    'credit': 0.0,
+                    'journal_id': journal.id, 
+                }),
+                (0, 0, {
+                    'name':'Venta por servicio',
+                    'account_id': cuenta.id,
+                    'partner_id': self.partner_id.id,
+                    'debit': 0.0,
+                    'credit': self.monto_financiado,
+                    'journal_id': journal.id,
+                }),
+            ],
+        })
+        return override_write
+        
 class linea_servicio_adquirido(models.Model):
     _name = 'odoo_emanuel.linea_servicio_adquirido'
     _description = 'Linea servicio adquirido'
 
     servicio_adquirido_id = fields.Many2one('odoo_emanuel.servicio_adquirido', string="Servicio Adquirido", required=True,readonly=True)
-    #account_payment_ids = fields.Many2one('account.payment.group',string='Account payment ids')
-    #account_payment_ids = fields.Many2many('account.payment.group','account_payment_linea_cuotas_servicio_adquirido_rel','account_payment_id','linea_cuota_servicio_adquirido_id', compute_sudo=True)
     nro_cuota = fields.Char('Cuota',size=7,readonly=True)
     servicio = fields.Many2one('odoo_emanuel.servicio_emanuel','Servicio',readonly=True)
     periodo = fields.Many2one('odoo_emanuel.periodo',required=True, readonly=True)
@@ -91,4 +117,10 @@ class monto_recibo_cuota(models.Model):
     linea_servicio_adquirido_id = fields.Many2one('odoo_emanuel.linea_servicio_adquirido',string='Linea servicio adquirido')
     recibo_id = fields.Many2one('account.payment.group',string='Recibo')
     monto = fields.Float('Monto pagado')
-    
+
+class recibo_cuota(models.Model):
+    _name = 'odoo_emanuel.recibo_cuota'
+    _description = 'Historico recibo cuota'
+
+    linea_servicio_adquirido_id = fields.Many2one('odoo_emanuel.linea_servicio_adquirido',string='Linea servicio adquirido')
+    recibo_id = fields.Many2one('account.payment.group',string='Recibo')

@@ -1,6 +1,5 @@
 <odoo>
   <data>
-    <!-- explicit list view definition -->
 
     <record model="ir.ui.view" id="odoo_emanuel.list">
       <field name="name">odoo_emanuel servicio_emanuel</field>
@@ -63,7 +62,6 @@
         </form>
       </field>
     </record>
-    <!-- actions opening views on models -->
 
     <record model="ir.actions.act_window" id="odoo_emanuel.action_window">
       <field name="name">Servicios Emanuel</field>
@@ -76,9 +74,6 @@
       <field name="res_model">odoo_emanuel.linea_costo_unico</field>
       <field name="view_mode">tree,form</field>
     </record>
-    
-
-    <!-- Top menu item -->
     
     <menuitem id="odoo_emanuel.menu_servicios" 
       name="Servicios Emanuel" 

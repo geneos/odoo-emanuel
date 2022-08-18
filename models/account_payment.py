@@ -9,35 +9,27 @@ class account_payment_group (models.Model):
 
     es_cobro_servicios = fields.Boolean('Es cobro de servicios', default=True)
     deuda_cuotas_seleccionadas = fields.Float('Deuda cuotas seleccionadas', readonly=True, compute='_compute_deuda_seleccionada')
-    #linea_cuota_servicio_adquirido_ids = fields.One2many('odoo_emanuel.linea_servicio_adquirido','account_payment_ids',string = 'Cuota')
     linea_cuota_servicio_adquirido_ids = fields.Many2many('odoo_emanuel.linea_servicio_adquirido')#,'account_payment_linea_cuotas_servicio_adquirido_rel','linea_cuota_servicio_adquirido_id','account_payment_id',string = 'Cuota')
     diferencia_pago = fields.Float('Diferencia de pago', readonly=True, compute='_compute_diferencia_pago')
-
+    
     @api.depends('linea_cuota_servicio_adquirido_ids')
-    def _compute_deuda_seleccionada(self):
+    def _compute_deuda_seleccionada(self): 
         for rec in self:
-            rec.deuda_cuotas_seleccionadas = sum(linea.saldo for linea in rec.linea_cuota_servicio_adquirido_ids)
-            #for linea in rec.linea_cuota_servicio_adquirido_ids:#._origin:
-            #    rec.deuda_cuotas_seleccionadas += linea.saldo
-
+                rec.deuda_cuotas_seleccionadas = sum(linea.saldo for linea in rec.linea_cuota_servicio_adquirido_ids)
+        
     @api.depends('payments_amount','deuda_cuotas_seleccionadas')
     def _compute_diferencia_pago(self):
-        for rec in self:
+        for rec in self:    
             rec.diferencia_pago = rec.payments_amount - rec.deuda_cuotas_seleccionadas
-
+        
     def post(self):  
         res = super(account_payment_group, self).post()
-        #res['deuda_cuota_seleccionadas'] = foo
         if self.es_cobro_servicios:
             cuotas = self.linea_cuota_servicio_adquirido_ids
             monto_pagado_residual = self.payments_amount
             tasa_actual = self.env['odoo_emanuel.tasa'].search([])
-
             monto_recibo_cuota = self.env['odoo_emanuel.monto_recibo_cuota']
-
             for c in cuotas:
-                #import pdb
-                #pdb.set_trace()
                 if (float(c.saldo) <= float(monto_pagado_residual)):
                     vals = {
                         'linea_servicio_adquirido_id': c.id,
@@ -50,7 +42,6 @@ class account_payment_group (models.Model):
                     c.saldo = 0
                     monto_pagado_residual = monto_pagado_residual - c.monto
                     c.fecha_pago = date.today()
-
                 else:
                     monto_recibo_cuota = self.env['odoo_emanuel.monto_recibo_cuota']
                     vals = {
@@ -62,14 +53,10 @@ class account_payment_group (models.Model):
                     c.saldo = c.saldo-monto_pagado_residual
                     monto_interes = monto_pagado_residual
                     monto_pagado_residual = 0
-                #c.save
                 if (self.payment_date > c.fecha_vencimiento) and not (c.servicio.es_servicio_interes):
-                    
                     dias = (self.payment_date - c.fecha_vencimiento).days
                     tasa_diaria = tasa_actual.tasa/30
                     interes = tasa_diaria*dias*monto_interes
-                    #import pdb
-                    #pdb.set_trace()
                     if interes>0:
                         mes = date.today().month
                         if mes < 10:
@@ -78,6 +65,16 @@ class account_payment_group (models.Model):
                         periodo_siguiente = periodo_actual.get_periodo_siguiente()
                         servicio_interes = self.env['odoo_emanuel.servicio_emanuel'].search([('es_servicio_interes','=',True)])                    
                         if not servicio_interes:
+                            cuenta_servicio = self.env['account.account'].search([('code','=','1.1.3.01.010')], limit=1)
+                            servicio_emanuel = self.env['odoo_emanuel.servicio_emanuel']
+                            vals = {
+                                'name' : 'Interes',
+                                'es_servicio_interes' : True,
+                                'es_servicio_costo_unico' : False,
+                                'activo' : True,
+                                'cuenta_contable' : cuenta_servicio.id,
+                            }
+                            servicio_interes = servicio_emanuel.create(vals)
                             #Creo servicio
                             servicio_adquirido = self.env['odoo_emanuel.servicio_adquirido']
                             vals = {
@@ -92,6 +89,18 @@ class account_payment_group (models.Model):
                             servicio_interes_partner = servicio_adquirido.create(vals)
                         else:
                             servicio_interes_partner = self.env['odoo_emanuel.servicio_adquirido'].search([('servicio','=',servicio_interes[0].id),('partner_id','=',self.partner_id.id)])
+                            if not servicio_interes_partner:
+                                servicio_adquirido = self.env['odoo_emanuel.servicio_adquirido']
+                                vals = {
+                                    'servicio' : servicio_interes.id,
+                                    'partner_id' : self.partner_id.id,
+                                    'periodo_inicio' : periodo_siguiente.id,
+                                    'monto_total' : 0,
+                                    'entrega_inicial' : 0,
+                                    'monto_financiado' : 0,
+                                    'cantidad_cuotas' : 1
+                                }
+                                servicio_interes_partner = servicio_adquirido.create(vals)
                         #Creo cuotas
                         linea_servicio_adquirido = self.env['odoo_emanuel.linea_servicio_adquirido']
                         vals = {
@@ -107,25 +116,38 @@ class account_payment_group (models.Model):
                             'pagado' : False,
                             'descripcion' : f"Interes por cuota {c.periodo} del servicio {c.servicio.name}"
                         }
-                        linea_servicio_adquirido.create(vals)
+                        interes = linea_servicio_adquirido.create(vals)
+                        recibo_cuota = self.env['odoo_emanuel.recibo_cuota']
+                        vals = {
+                            'linea_servicio_adquirido_id': interes.id,
+                            'recibo_id': self.id,
+                        }
+                        recibo_cuota.create(vals)
             if (round(monto_pagado_residual,4)>0):
                 raise UserError('Necesita imputar el total, seleccione mas cuotas.')
         return res
-    
   
     def cancelar(self):
-        cuotas = self.linea_cuota_servicio_adquirido_ids
-        pagos = self.payment_ids
-        # Pasa la linea de pago a cancelado
-        for p in pagos:
-            p.state = 'cancelled'
-        # Pasa el estado del recibo a cancelado
-        self.state='cancel'
-        monto_pagado_residual = self.diferencia_pago+self.deuda_cuotas_seleccionadas
-        for c in cuotas:
-            if (len(cuotas)==1):
-                c.saldo=c.saldo+monto_pagado_residual
-            else:
-                monto = self.env['odoo_emanuel.monto_recibo_cuota'].search([('linea_servicio_adquirido_id','=',c.id),('recibo_id','=',self.id)]).monto
-                c.saldo = c.saldo+monto
-            c.pagado=False
+        res = super(account_payment_group, self).cancel()
+        if self.es_cobro_servicios:
+            cuotas = self.linea_cuota_servicio_adquirido_ids
+            pagos = self.payment_ids
+            # Pasa la linea de pago a cancelado
+            for p in pagos:
+                p.state = 'cancelled'
+            # Pasa el estado del recibo a cancelado
+            self.state='cancel'
+            monto_pagado_residual = self.diferencia_pago+self.deuda_cuotas_seleccionadas
+            linea_servicio_adquirido = self.env['odoo_emanuel.linea_servicio_adquirido']
+            cuotas_interes = self.env['odoo_emanuel.recibo_cuota'].search([('recibo_id','=',self.id)])
+            for i in cuotas_interes:
+                linea_servicio_adquirido.search([('id','=',i.linea_servicio_adquirido_id.id)]).unlink()
+                i.unlink() 
+            for c in cuotas:
+                if (len(cuotas)==1):
+                    c.saldo=c.saldo+monto_pagado_residual
+                else:
+                    monto = self.env['odoo_emanuel.monto_recibo_cuota'].search([('linea_servicio_adquirido_id','=',c.id),('recibo_id','=',self.id)]).monto
+                    c.saldo = c.saldo+monto
+                c.pagado=False
+        return res

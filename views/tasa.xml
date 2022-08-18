@@ -1,6 +1,5 @@
 <odoo>
   <data>
-    <!-- explicit list view definition -->
 
     <record model="ir.ui.view" id="odoo_emanuel.tasa">
       <field name="name">odoo_emanuel tasa</field>
@@ -27,10 +26,7 @@
     </record>
 
     <record forcecreate="True" id="odoo_emauel_tasa" model="odoo_emanuel.tasa">
-      <field name="tasa">0</field>
     </record>
-
-    <!-- actions opening views on models -->
 
     <record model="ir.actions.act_window" id="odoo_emanuel_action_tasa">
       <field name="type">ir.actions.act_window</field>
@@ -39,8 +35,6 @@
       <field name="view_mode">tree,form</field>
       <field name="res_id">1</field>
     </record>
-
-    <!-- Top menu item -->
 
     <menuitem id="odoo_emanuel.menu_tasa" 
       name="Tasa de interes" 

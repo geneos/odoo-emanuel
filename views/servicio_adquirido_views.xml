@@ -1,6 +1,5 @@
 <odoo>
   <data>
-    <!-- explicit list view definition -->
 
     <record model="ir.ui.view" id="odoo_emanuel.servicio_adquirido">
       <field name="name">odoo_emanuel servicio_adquirido</field>
@@ -68,7 +67,6 @@
         <form create="false">
           <sheet>
             <group>
-              <!--<field name="servicio_adquirido_id"/>-->
               <field name="nro_cuota"/>
               <field name="periodo"/>
               <field name="servicio"/>
@@ -84,7 +82,6 @@
         </form>
       </field>
     </record>
-    <!-- actions opening views on models -->
 
     <record model="ir.actions.act_window" id="odoo_emanuel.action_window">
       <field name="name">Servicios Emanuel</field>
