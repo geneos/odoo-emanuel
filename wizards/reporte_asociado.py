@@ -8,6 +8,7 @@ tipos=[
         ('1','Cuotas impagas vencidas'),
         ('2','Cuotas impagas por vencer'),
         ('3','Cuotas pagas'),
+        ('4','Deuda total'),
     ]
 
 class ReporteServicioWizard(models.TransientModel):
@@ -16,7 +17,7 @@ class ReporteServicioWizard(models.TransientModel):
     
     asociado =fields.Many2one('res.partner','Asociado', required=True)
     servicio=fields.Many2many('odoo_emanuel.servicio_emanuel',string='Servicio')
-    tipo = fields.Selection(tipos)
+    tipo = fields.Selection(tipos, required=True)
 
     def imprimir_reporte(self):
         asociado = self.asociado
@@ -31,21 +32,28 @@ class ReporteServicioWizard(models.TransientModel):
         # informacion a imprimir
         docs = []
         total = 0
+        titulo = ''
+        saldo = 'saldo'
         # por cada servicio
         for s in servicios_adquiridos:
             # por cada cuota
             if self.tipo == '1':    
                 titulo = "Informe de cuotas impagas vencidas"
                 columna = "Fecha vencimiento"
-                lista = s.linea_servicio_adquirido_ids.filtered(lambda x: not x.pagado and x.fecha_vencimiento < date.today()).sorted(key=lambda x: x.fecha_vencimiento)
+                lista = s.linea_servicio_adquirido_ids.filtered(lambda x: not x.pagado and x.fecha_vencimiento < date.today() and x.cancelado==False).sorted(key=lambda x: x.fecha_vencimiento)
             elif self.tipo == '2':
                 titulo = "Informe de cuotas impagas por vencer"
                 columna = "Fecha vencimiento"
-                lista = s.linea_servicio_adquirido_ids.filtered(lambda x: not x.pagado and x.fecha_vencimiento > date.today()).sorted(key=lambda x: x.fecha_vencimiento)
+                lista = s.linea_servicio_adquirido_ids.filtered(lambda x: not x.pagado and x.fecha_vencimiento > date.today() and x.cancelado==False).sorted(key=lambda x: x.fecha_vencimiento)
+            elif self.tipo == '4':
+                titulo = "Informe de cuotas impagas"
+                columna = "Fecha vencimiento"
+                lista = s.linea_servicio_adquirido_ids.filtered(lambda x: not x.pagado and x.cancelado==False).sorted(key=lambda x: x.fecha_vencimiento)
             else:
                 titulo = "Informe de cuotas pagas"
                 columna = "Fecha de pago"
-                lista = s.linea_servicio_adquirido_ids.filtered(lambda x: x.pagado).sorted(key=lambda x: x.fecha_pago)
+                saldo = 'monto'
+                lista = s.linea_servicio_adquirido_ids.filtered(lambda x: x.pagado and x.cancelado==False).sorted(key=lambda x: x.fecha_pago)
             for c in lista:
                 if self.tipo == '3':
                     docs.append({
@@ -66,6 +74,7 @@ class ReporteServicioWizard(models.TransientModel):
         data = {
             'titulo':titulo,
             'columna': columna,
+            'saldo':saldo,
             'nombre': asociado.name,
             'direccion': asociado.street,
             'cond_iva': asociado.l10n_ar_afip_responsibility_type_id.name,

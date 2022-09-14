@@ -26,7 +26,7 @@
         </record>
 
         <record id="action_view_servicio_report_wizard" model="ir.actions.act_window">
-            <field name="name">Reporte servicios cobrados</field>
+            <field name="name">Reporte servicios</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">odoo_emanuel.reporte_servicio_cobro</field>
             <field name="view_mode">form</field>
@@ -34,7 +34,7 @@
         </record>
         
     <menuitem 
-            name="Reporte servicios cobrados" 
+            name="Reporte servicios" 
             id="servicio_reporte_menu" 
             parent="sale.menu_report_product_all" 
             action="action_view_servicio_report_wizard"

@@ -8,14 +8,24 @@ class account_payment_group (models.Model):
     _inherit = ['account.payment.group']
 
     es_cobro_servicios = fields.Boolean('Es cobro de servicios', default=True)
-    deuda_cuotas_seleccionadas = fields.Float('Deuda cuotas seleccionadas', readonly=True, compute='_compute_deuda_seleccionada')
-    linea_cuota_servicio_adquirido_ids = fields.Many2many('odoo_emanuel.linea_servicio_adquirido')#,'account_payment_linea_cuotas_servicio_adquirido_rel','linea_cuota_servicio_adquirido_id','account_payment_id',string = 'Cuota')
-    diferencia_pago = fields.Float('Diferencia de pago', readonly=True, compute='_compute_diferencia_pago')
+    deuda_cuotas_seleccionadas = fields.Float('Deuda cuotas seleccionadas', readonly=True, compute='_compute_deuda_seleccionada', digits=(16, 2))
+    linea_cuota_servicio_adquirido_ids = fields.Many2many('odoo_emanuel.linea_servicio_adquirido')
+    diferencia_pago = fields.Float('Diferencia de pago', readonly=True, compute='_compute_diferencia_pago', digits=(16, 2))
     
+    def monto_costo_unico(self,linea):
+        servicio = linea.servicio
+        linea_costo_unico = self.env['odoo_emanuel.linea_costo_unico'].search([('servicio','=',servicio.id)])
+        
     @api.depends('linea_cuota_servicio_adquirido_ids')
     def _compute_deuda_seleccionada(self): 
         for rec in self:
-                rec.deuda_cuotas_seleccionadas = sum(linea.saldo for linea in rec.linea_cuota_servicio_adquirido_ids)
+            suma = 0
+            for linea in rec.linea_cuota_servicio_adquirido_ids:
+                if linea.servicio.es_servicio_costo_unico:
+                    suma += self.monto_costo_unico(linea)
+                else:
+                    suma += linea.saldo
+            rec.deuda_cuotas_seleccionadas = sum(linea.saldo for linea in rec.linea_cuota_servicio_adquirido_ids)
         
     @api.depends('payments_amount','deuda_cuotas_seleccionadas')
     def _compute_diferencia_pago(self):
@@ -27,7 +37,9 @@ class account_payment_group (models.Model):
         if self.es_cobro_servicios:
             cuotas = self.linea_cuota_servicio_adquirido_ids
             monto_pagado_residual = self.payments_amount
-            tasa_actual = self.env['odoo_emanuel.tasa'].search([])
+            tasa_actual = self.env['odoo_emanuel.tasa_resarcitorio'].search([])
+            if (float(tasa_actual.tasa) == 0):
+                        raise UserError('La tasa resarcitorio no puede ser 0.')
             monto_recibo_cuota = self.env['odoo_emanuel.monto_recibo_cuota']
             for c in cuotas:
                 if (float(c.saldo) <= float(monto_pagado_residual)):
@@ -40,7 +52,7 @@ class account_payment_group (models.Model):
                     c.pagado = True
                     monto_interes = c.saldo
                     c.saldo = 0
-                    monto_pagado_residual = monto_pagado_residual - c.monto
+                    monto_pagado_residual = round(monto_pagado_residual,2) - round(c.monto,2)
                     c.fecha_pago = date.today()
                 else:
                     monto_recibo_cuota = self.env['odoo_emanuel.monto_recibo_cuota']
@@ -123,7 +135,7 @@ class account_payment_group (models.Model):
                             'recibo_id': self.id,
                         }
                         recibo_cuota.create(vals)
-            if (round(monto_pagado_residual,4)>0):
+            if (monto_pagado_residual>0):
                 raise UserError('Necesita imputar el total, seleccione mas cuotas.')
         return res
   

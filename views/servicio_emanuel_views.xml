@@ -27,7 +27,8 @@
               <field name="activo"/>
               <field name="es_servicio_costo_unico"/>      
               <field name="costo_unico_servicio" attrs="{'invisible': [('es_servicio_costo_unico', '=', False)], 'required': [('es_servicio_costo_unico', '=', True)]}" context="{ 'default_servicio_emanuel_id':id}"/>
-              <field name="cuenta_contable"/>             
+              <field name="cuenta_contable"/>     
+              <button name="generas_cuotas" string="Generar cuotas mensuales" type="object" class="btn btn-primary" attrs="{'invisible':[('es_servicio_costo_unico', '==', False)]}"/>     
             </group>
           </sheet>
         </form>

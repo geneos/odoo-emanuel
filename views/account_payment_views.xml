@@ -44,7 +44,7 @@
 	        </xpath>
             <xpath expr="//page[4]" position='before'>
                 <page string="Cuotas de servicios" attrs="{'invisible': [('es_cobro_servicios', '=', False)]}">
-                    <field name="linea_cuota_servicio_adquirido_ids" options="{'no_create' : True}" domain="[('pagado','=',False),('servicio_adquirido_id.partner_id.id', '=', partner_id)]">
+                    <field name="linea_cuota_servicio_adquirido_ids" options="{'no_create' : True}" domain="[('cancelado','=',False),('pagado','=',False),('servicio_adquirido_id.partner_id.id', '=', partner_id)]">
                         <tree edit="false">
                             <field name="nro_cuota"/>
                             <field name="periodo"/>

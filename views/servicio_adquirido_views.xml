@@ -31,6 +31,7 @@
           <field name="saldo"/>
           <field name="fecha_pago"/>
           <field name="pagado"/>
+          <field name="cancelado"></field>
         </tree>
       </field>
     </record>
@@ -44,8 +45,10 @@
             <group>
               <field name="servicio"/>
               <field name="partner_id" invisible="1"/>
+              <!-- <field name="es_servicio_costo_unico" invisible="1"/> -->
               <field name="periodo_inicio"/>
-              <field name="monto_total"/>
+              <field name="monto_total" />
+              <!-- invisible="es_servicio_costo_unico" -->
               <field name="entrega_inicial"/>
               <field name="cantidad_cuotas"/>
               <button name="action_generar_lineas_servicio_adquirido"
@@ -54,6 +57,12 @@
                       string="Generar cuotas del servicio">
               </button>
               <field name="linea_servicio_adquirido_ids"/>
+              <button name="action_cancelar_servicio"
+                      class="oe_highlight"
+                      type="object"
+                      string="Cancelar servicio">
+                      <!-- attrs="{'invisible':[('servicio.name', '=', 'Interes')]}"> -->
+              </button>
             </group>
           </sheet>
         </form>
@@ -77,6 +86,7 @@
               <field name="saldo"/>
               <field name="fecha_pago"/>
               <field name="pagado"/>
+              <field name="cancelado"></field>
             </group>
           </sheet>
         </form>

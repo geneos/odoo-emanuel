@@ -1,0 +1,46 @@
+<odoo>
+  <data>
+
+    <record model="ir.ui.view" id="odoo_emanuel.tasa_resarcitorio">
+      <field name="name">odoo_emanuel tasa resarcitorio</field>
+      <field name="model">odoo_emanuel.tasa_resarcitorio</field>
+      <field name="arch" type="xml">
+        <tree create="false" delete="false">
+          <field name="tasa"/>     
+        </tree>
+      </field>
+    </record>
+
+    <record id="odoo_emanuel_tasa_form" model="ir.ui.view">
+      <field name="name">tasa_resarcitorio.view.form</field>
+      <field name="model">odoo_emanuel.tasa_resarcitorio</field>
+      <field name="arch" type="xml">
+        <form create="false" delete="false">
+          <sheet>
+            <group>
+              <field name="tasa"/>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record forcecreate="True" id="odoo_emauel_tasa_resarcitorio" model="odoo_emanuel.tasa_resarcitorio">
+    </record>
+
+    <record model="ir.actions.act_window" id="odoo_emanuel_action_tasa_resarcitorio">
+      <field name="type">ir.actions.act_window</field>
+      <field name="name">Tasa de interes</field>
+      <field name="res_model">odoo_emanuel.tasa_resarcitorio</field>
+      <field name="view_mode">tree,form</field>
+      <field name="res_id">1</field>
+    </record>
+
+    <menuitem id="odoo_emanuel.menu_tasa_resarcitorio" 
+      name="Tasa de interes resarcitorio" 
+      parent="sale.menu_sale_config"
+      action="odoo_emanuel_action_tasa_resarcitorio"
+      sequence="8"/>
+
+  </data>
+</odoo>

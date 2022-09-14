@@ -1,9 +1,9 @@
 <odoo>
   <data>
 
-    <record model="ir.ui.view" id="odoo_emanuel.tasa">
-      <field name="name">odoo_emanuel tasa</field>
-      <field name="model">odoo_emanuel.tasa</field>
+    <record model="ir.ui.view" id="odoo_emanuel.tasa_venta">
+      <field name="name">odoo_emanuel tasa venta</field>
+      <field name="model">odoo_emanuel.tasa_venta</field>
       <field name="arch" type="xml">
         <tree create="false" delete="false">
           <field name="tasa"/>     
@@ -12,8 +12,8 @@
     </record>
 
     <record id="odoo_emanuel_tasa_form" model="ir.ui.view">
-      <field name="name">tasa.view.form</field>
-      <field name="model">odoo_emanuel.tasa</field>
+      <field name="name">tasa_venta.view.form</field>
+      <field name="model">odoo_emanuel.tasa_venta</field>
       <field name="arch" type="xml">
         <form create="false" delete="false">
           <sheet>
@@ -25,21 +25,21 @@
       </field>
     </record>
 
-    <record forcecreate="True" id="odoo_emauel_tasa" model="odoo_emanuel.tasa">
+    <record forcecreate="True" id="odoo_emauel_tasa_venta" model="odoo_emanuel.tasa_venta">
     </record>
 
-    <record model="ir.actions.act_window" id="odoo_emanuel_action_tasa">
+    <record model="ir.actions.act_window" id="odoo_emanuel_action_tasa_venta">
       <field name="type">ir.actions.act_window</field>
       <field name="name">Tasa de interes</field>
-      <field name="res_model">odoo_emanuel.tasa</field>
+      <field name="res_model">odoo_emanuel.tasa_venta</field>
       <field name="view_mode">tree,form</field>
       <field name="res_id">1</field>
     </record>
 
-    <menuitem id="odoo_emanuel.menu_tasa" 
-      name="Tasa de interes" 
+    <menuitem id="odoo_emanuel.menu_tasa_venta" 
+      name="Tasa de interes venta" 
       parent="sale.menu_sale_config"
-      action="odoo_emanuel_action_tasa"
+      action="odoo_emanuel_action_tasa_venta"
       sequence="4"/>
 
   </data>

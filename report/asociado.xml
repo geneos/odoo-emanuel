@@ -7,7 +7,7 @@
         <report 
             id="servicios_asociado"
             model="odoo_emanuel.reporte_asociado"
-            string="Servicios a vencer"
+            string="Informe asociados"
             report_type="qweb-pdf"
             name="odoo_emanuel.servicios_asociado_template"
             menu="False"
@@ -35,7 +35,7 @@
                                     <th class="text-center" style="width: 25%">Servicio</th>
                                     <th class="text-center" style="width: 25%">Periodo</th>
                                     <th class="text-center" style="width: 25%"><span t-esc="columna"/></th>
-                                    <th class="text-center" style="width: 25%">Saldo</th>
+                                    <th class="text-center" style="width: 25%"><span t-esc="saldo"/></th>
                                 </thead>
                                 <tbody>
                                     <!-- <t t-debug="pdb"></t> -->

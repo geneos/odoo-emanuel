@@ -3,7 +3,7 @@
         <report 
             id="servicios_cobro"
             model="odoo_emanuel.reporte_servicio"
-            string="Servicios"
+            string="Informe servicios"
             report_type="qweb-pdf"
             name="odoo_emanuel.servicios_cobro_template"
             menu="False"
@@ -14,28 +14,31 @@
                     <t t-call="web.external_layout">
                         <div class="page">
                             <h1 class="text-center">
-                               Informe de servicio <span  t-esc="servicio" />
+                               Informe de servicios
                             </h1>
                             <br> </br>
                             <table class="table table-condensed table-bordered">
                                 <thead>
-                                    <th class="text-center" style="width: 25%">Asociado</th>
-                                    <th class="text-center" style="width: 25%">Periodo</th>
-                                    <th class="text-center" style="width: 25%">Fecha de pago</th>
-                                    <th class="text-center" style="width: 25%">Monto</th>
+                                    <th class="text-center" style="width: 20%">Asociado</th>
+                                    <th class="text-center" style="width: 20%">Servicio</th>
+                                    <th class="text-center" style="width: 20%">Periodo</th>
+                                    <th class="text-center" style="width: 20%">Fecha de pago</th>
+                                    <th class="text-center" style="width: 20%">Monto</th>
                                 </thead>
                                 <tbody>
                                     <!-- <t t-debug="pdb"></t> -->
                                     <t t-foreach="docs" t-as="cuota">
                                         <tr>     
-                                            <td class="text-center"><span  t-esc="cuota['asociado']" /></td>
-                                            <td class="text-center"><span  t-esc="cuota['cuota']" /></td>
+                                            <td class="text-center"><span t-esc="cuota['asociado']" /></td>
+                                            <td class="text-center"><span t-esc="cuota['servicio']" /></td>
+                                            <td class="text-center"><span t-esc="cuota['cuota']" /></td>
                                             <td class="text-center"><span t-esc="cuota['fecha']" /></td>
                                             <td class="text-center"><span t-esc="cuota['monto']" /></td>
                                         </tr>
                                     </t>
                                 </tbody>
-                                            <th class="text-center" style="width: 25%">Total</th>
+                                            <th class="text-center" style="width: 20%">Total</th>
+                                            <td class="text-center"><span  /></td>
                                             <td class="text-center"><span  /></td>
                                             <td class="text-center"><span  /></td>
                                             <td class="text-center"><span t-esc="total" /></td>

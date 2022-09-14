@@ -62,7 +62,7 @@ class periodo(models.Model):
     @api.depends('mes','anio')
     def _compute_periodo_name(self):
         for periodo in self:
-            periodo.periodo_name = '%s / %s' % (periodo.mes, periodo.anio)
+            periodo.periodo_name = '%s/%s' % (periodo.mes, periodo.anio)
 
     
     def get_periodo_siguiente(self):
