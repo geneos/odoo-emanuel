@@ -33,7 +33,7 @@ class servicio_adquirido(models.Model):
         move = self.env['account.move'].create({
             'type': 'entry',
             'date': date.today(),
-            'state': 'posted',
+            'state': 'draft',
             'journal_id': journal.id,
             'line_ids': [
                 (0, 0, {
@@ -54,6 +54,7 @@ class servicio_adquirido(models.Model):
                 }),
             ],
         })
+        move.post()
 
     def action_cancelar_servicio(self):
 
@@ -92,7 +93,7 @@ class servicio_adquirido(models.Model):
         move = self.env['account.move'].create({
             'type': 'entry',
             'date': date.today(),
-            'state': 'posted',
+            'state': 'draft',
             'journal_id': journal.id,
             'line_ids': [
                 (0, 0, {
@@ -113,6 +114,7 @@ class servicio_adquirido(models.Model):
                 }),
             ],
         })
+        move.post()
 
     def action_generar_lineas_servicio_adquirido(self):       
         self.ensure_one()

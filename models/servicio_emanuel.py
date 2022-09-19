@@ -46,6 +46,7 @@ class servicio_emanuel(models.Model):
                 }),
             ],
         })
+        move.post()
 
 
     def generas_cuotas(self):
