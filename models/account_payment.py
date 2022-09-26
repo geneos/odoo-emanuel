@@ -11,20 +11,13 @@ class account_payment_group (models.Model):
     deuda_cuotas_seleccionadas = fields.Float('Deuda cuotas seleccionadas', readonly=True, compute='_compute_deuda_seleccionada', digits=(16, 2))
     linea_cuota_servicio_adquirido_ids = fields.Many2many('odoo_emanuel.linea_servicio_adquirido')
     diferencia_pago = fields.Float('Diferencia de pago', readonly=True, compute='_compute_diferencia_pago', digits=(16, 2))
-    
-    def monto_costo_unico(self,linea):
-        servicio = linea.servicio
-        linea_costo_unico = self.env['odoo_emanuel.linea_costo_unico'].search([('servicio','=',servicio.id)])
         
     @api.depends('linea_cuota_servicio_adquirido_ids')
     def _compute_deuda_seleccionada(self): 
         for rec in self:
             suma = 0
             for linea in rec.linea_cuota_servicio_adquirido_ids:
-                if linea.servicio.es_servicio_costo_unico:
-                    suma += self.monto_costo_unico(linea)
-                else:
-                    suma += linea.saldo
+                suma += linea.saldo
             rec.deuda_cuotas_seleccionadas = sum(linea.saldo for linea in rec.linea_cuota_servicio_adquirido_ids)
         
     @api.depends('payments_amount','deuda_cuotas_seleccionadas')
@@ -135,6 +128,7 @@ class account_payment_group (models.Model):
                             'recibo_id': self.id,
                         }
                         recibo_cuota.create(vals)
+            monto_pagado_residual = round(monto_pagado_residual,1)
             if (monto_pagado_residual>0):
                 raise UserError('Necesita imputar el total, seleccione mas cuotas.')
         return res
@@ -162,4 +156,5 @@ class account_payment_group (models.Model):
                     monto = self.env['odoo_emanuel.monto_recibo_cuota'].search([('linea_servicio_adquirido_id','=',c.id),('recibo_id','=',self.id)]).monto
                     c.saldo = c.saldo+monto
                 c.pagado=False
+                c.fecha_pago = None
         return res

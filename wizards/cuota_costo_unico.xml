@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_cuota_costo_unico" model="ir.ui.view">
+            <field name="name">Cuota costo unico</field>
+            <field name="model">odoo_emanuel.servicio_emanuel_cuota_costo_unico</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="servicio" context="{'default_servicio' : id}"/>
+                        <field name="asociado"/>
+                        <field name="periodo"/>
+                    </group>
+                    <footer>
+                        <button 
+                                name="generas_cuotas" 
+                                string="Generar cuota" 
+                                type="object" class="btn-primary"/>
+                        <button 
+                                string="Cancelar" 
+                                class="btn-secondary" 
+                                special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_view_crear_cuota_costo_unico_wizard" model="ir.actions.act_window">
+            <field name="name">Cuota costo unico</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">odoo_emanuel.servicio_emanuel_cuota_costo_unico</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+</data>
+
+</odoo>

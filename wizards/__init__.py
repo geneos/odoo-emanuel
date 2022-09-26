@@ -1,1 +1,1 @@
-from . import reporte_asociado, reporte_servicio_cobro
+from . import reporte_asociado, reporte_servicio_cobro, cuota_costo_unico

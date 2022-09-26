@@ -21,11 +21,6 @@ class servicio_adquirido(models.Model):
     cantidad_cuotas = fields.Integer('Cantidad de cuotas',required=True)
     linea_servicio_adquirido_ids = fields.One2many('odoo_emanuel.linea_servicio_adquirido', 'servicio_adquirido_id', 'Cuotas', ondelete='cascade')
     
-    # @api.onchange('servicio')
-    # def _onchange_servicio(self):
-    #     for record in self:
-    #         record.es_servicio_costo_unico = record.servicio.es_servicio_costo_unico
-
     def cancelar_servicio(self, monto):
         journal = self.env['account.journal'].search([('code', '=', 'Vario')], limit=1)
         cuenta = self.env['account.account'].search([('code','=','4.1.1.01.020')], limit=1)
@@ -145,9 +140,9 @@ class servicio_adquirido(models.Model):
                     'servicio': self.servicio.id,
                     'periodo': periodo_actual.id,
                     'fecha_vencimiento': fecha_vencimiento,
-                    'monto': valor_cuota,
-                    'monto_interes': interes,
-                    'monto_capital': capital,
+                    'monto': round(valor_cuota,2),
+                    'monto_interes': round(interes,2),
+                    'monto_capital': round(capital,2),
                     'saldo':valor_cuota,
                     'pagado': False
                     }

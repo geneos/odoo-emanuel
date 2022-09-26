@@ -17,6 +17,7 @@
     },
     'data': [
         'security/ir.model.access.csv',
+        'wizards/reporte_servicio_cobro.xml',
         'views/servicio_emanuel_views.xml',
         'views/servicio_adquirido_views.xml',
         'views/account_payment_views.xml',
@@ -27,9 +28,9 @@
         'views/periodo.xml',
         'report/asociado.xml',
         'wizards/reporte_asociado.xml',
+        'wizards/cuota_costo_unico.xml',
         'report/servicio_cobros.xml',
         'report/recibo.xml',
-        'wizards/reporte_servicio_cobro.xml',
         'data/odoo_emanuel.periodo.csv'
     ],
     'installable': True,
