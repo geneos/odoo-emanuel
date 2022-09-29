@@ -11,8 +11,39 @@ class servicio_adquirido(models.Model):
     _name = 'odoo_emanuel.servicio_adquirido'
     _description = 'Servicio adquirido'
 
+    dias = [
+        ('01',1),
+        ('02',2),
+        ('03',3),
+        ('04',4),
+        ('05',5),
+        ('06',6),
+        ('07',7),
+        ('08',8),
+        ('09',9),
+        ('10',10),
+        ('11',11),
+        ('12',12),
+        ('13',13),
+        ('14',14),
+        ('15',15),
+        ('16',16),
+        ('17',17),
+        ('18',18),
+        ('19',19),
+        ('20',20),
+        ('21',21),
+        ('22',22),
+        ('23',23),
+        ('24',24),
+        ('25',25),
+        ('26',26),
+        ('27',27),
+        ('28',28),
+    ]
+
     servicio = fields.Many2one('odoo_emanuel.servicio_emanuel','Servicio',required=True)
-    #es_servicio_costo_unico = fields.Boolean('Costo unico')
+    dia_vencimiento = fields.Selection(dias,'Dia de vencimiento', required=True)
     partner_id = fields.Many2one('res.partner','Asociado',required=True)
     periodo_inicio = fields.Many2one('odoo_emanuel.periodo',required=True)
     monto_total = fields.Float('Monto total',required=True, digits=(16, 2))
@@ -124,7 +155,7 @@ class servicio_adquirido(models.Model):
         periodo_actual = self.periodo_inicio
         balance = self.monto_financiado     
         for i in range(1, self.cantidad_cuotas+1):
-            fecha_vencimiento = datetime.date(int(periodo_actual.anio), int(periodo_actual.mes), 10)
+            fecha_vencimiento = datetime.date(int(periodo_actual.anio), int(periodo_actual.mes), int(self.dia_vencimiento))
             valor_cuota = self.monto_financiado * ( ( (tasa_actual * (1+tasa_actual)**self.cantidad_cuotas) ) / ( ( (1+tasa_actual)**self.cantidad_cuotas)-1) )
             if i == self.cantidad_cuotas:
                 interes = balance * (tasa_actual)

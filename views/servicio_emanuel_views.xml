@@ -28,7 +28,7 @@
               <field name="es_servicio_costo_unico"/>      
               <field name="costo_unico_servicio" attrs="{'invisible': [('es_servicio_costo_unico', '=', False)], 'required': [('es_servicio_costo_unico', '=', True)]}" context="{ 'default_servicio_emanuel_id':id}"/>
               <field name="cuenta_contable"/>     
-              <!--<button name="odoo_emanuel.action_view_crear_cuota_costo_unico_wizard" string="Generar cuotas mensuales" type="action" class="btn btn-primary" attrs="{'invisible':[('es_servicio_costo_unico', '==', False)]}"/>     -->
+              <button name="odoo_emanuel.action_view_crear_cuota_costo_unico_wizard" string="Generar cuotas mensuales" type="action" class="btn btn-primary" attrs="{'invisible':[('es_servicio_costo_unico', '==', False)]}" context="{'default_servicio':id}"/>
             </group>
           </sheet>
         </form>

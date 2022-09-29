@@ -7,7 +7,7 @@
             <field name="arch" type="xml">
                 <form>
                     <group>
-                        <field name="servicio" context="{'default_servicio' : id}"/>
+                        <field name="servicio" attrs="{'readonly': 1}"/>
                         <field name="asociado"/>
                         <field name="periodo"/>
                     </group>

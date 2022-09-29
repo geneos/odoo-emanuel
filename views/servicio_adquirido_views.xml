@@ -9,6 +9,7 @@
           <field name="servicio"/>
           <field name="partner_id"/>
           <field name="periodo_inicio"/>
+          <field name="dia_vencimiento"/>
           <field name="monto_total"/>
           <field name="entrega_inicial"/>
           <field name="cantidad_cuotas"/>
@@ -43,12 +44,11 @@
         <form>
           <sheet>
             <group>
-              <field name="servicio"/>
+              <field name="servicio" domain="[('es_servicio_costo_unico','=',False),('es_servicio_interes','=',False)]"/>
               <field name="partner_id" invisible="1"/>
-              <!-- <field name="es_servicio_costo_unico" invisible="1"/> -->
               <field name="periodo_inicio"/>
+              <field name="dia_vencimiento"/>
               <field name="monto_total" />
-              <!-- invisible="es_servicio_costo_unico" -->
               <field name="entrega_inicial"/>
               <field name="cantidad_cuotas"/>
               <button name="action_generar_lineas_servicio_adquirido"
