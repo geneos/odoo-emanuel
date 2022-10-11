@@ -7,11 +7,19 @@ from odoo.exceptions import UserError
 class account_payment_group (models.Model):
     _inherit = ['account.payment.group']
 
-    es_cobro_servicios = fields.Boolean('Es cobro de servicios', default=True)
+    es_cobro_servicios = fields.Boolean('Es cobro de servicios',compute='_compute_es_cobro_de_servicio')
     deuda_cuotas_seleccionadas = fields.Float('Deuda cuotas seleccionadas', readonly=True, compute='_compute_deuda_seleccionada', digits=(16, 2))
     linea_cuota_servicio_adquirido_ids = fields.Many2many('odoo_emanuel.linea_servicio_adquirido')
     diferencia_pago = fields.Float('Diferencia de pago', readonly=True, compute='_compute_diferencia_pago', digits=(16, 2))
-        
+
+    @api.depends('partner_type')   
+    def _compute_es_cobro_de_servicio(self):
+        for record in self:
+            if record.partner_type == 'supplier':
+                record.es_cobro_servicios = False
+            else:
+                record.es_cobro_servicios = True
+    
     @api.depends('linea_cuota_servicio_adquirido_ids')
     def _compute_deuda_seleccionada(self): 
         for rec in self:

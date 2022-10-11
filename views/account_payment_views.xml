@@ -34,7 +34,7 @@
                 <attribute name="attrs">{'invisible':[('es_cobro_servicios', '=', True)]}</attribute>
             </xpath>
             <xpath expr="//field[@name='partner_id']" position='after'>
-                <field name="es_cobro_servicios" string="Es cobro de Servicios" attrs="{'readonly': [('state', '!=', 'draft')]}" />
+                <field name="es_cobro_servicios" string="Es cobro de Servicios" attrs="{'readonly': [('state', '!=', 'draft')], 'invisible':[('partner_type', '=', 'supplier')]}" />
 	        </xpath>
             <xpath expr="//field[@name='matched_amount']" position='attributes'>
                 <attribute name="invisible">[('es_cobro_servicios', '=', True)]</attribute>
